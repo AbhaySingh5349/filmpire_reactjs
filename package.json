@@ -6,6 +6,7 @@
     "@alan-ai/alan-sdk-web": "^1.8.54",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.15.1",
     "@mui/material": "^5.15.1",
     "@mui/styles": "^5.15.1",
     "@reduxjs/toolkit": "^2.0.1",
