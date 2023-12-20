@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   AppBar,
   IconButton,
@@ -18,6 +18,8 @@ import { Link } from 'react-router-dom'; // to switch between different pages
 
 import useStyles from './styles';
 import { useTheme } from '@mui/material/styles'; // to know current theme is light or dark
+// import Sidebar from '../Sidebar/Sidebar';
+import { Sidebar } from '../index';
 
 const NavBar = () => {
   console.log('NavBar component');
@@ -25,6 +27,8 @@ const NavBar = () => {
   const classes = useStyles();
   const isMobile = useMediaQuery('(max-width:600px)');
   const theme = useTheme();
+
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const isAuthenticated = true;
 
   return (
@@ -36,7 +40,7 @@ const NavBar = () => {
               color="inherit"
               edge="start"
               style={{ outline: 'none' }}
-              onClick={() => {}}
+              onClick={() => setIsDrawerOpen((prevState) => !prevState)}
               className={classes.menuButton}
             >
               <Menu />
@@ -71,6 +75,32 @@ const NavBar = () => {
           {isMobile && 'Search...'}
         </Toolbar>
       </AppBar>
+      <div>
+        <nav className={classes.drawer}>
+          {isMobile ? (
+            <Drawer
+              variant="temporary"
+              anchor="right"
+              open={isDrawerOpen}
+              onClose={() => setIsDrawerOpen((prevState) => !prevState)}
+              className={classes.drawerBackground}
+              classes={{ paper: classes.drawerPaper }} // to over-ride underline pieces of components
+              ModalProps={{ keepMounted: true }}
+            >
+              <Sidebar drawerState={isDrawerOpen} />
+            </Drawer>
+          ) : (
+            <Drawer
+              variant="permanent" // since we always want sidebar to be visible on desktop devices
+              open
+              anchor="left"
+              classes={{ paper: classes.drawerPaper }}
+            >
+              <Sidebar drawerState={isDrawerOpen} />
+            </Drawer>
+          )}
+        </nav>
+      </div>
     </>
   );
 };

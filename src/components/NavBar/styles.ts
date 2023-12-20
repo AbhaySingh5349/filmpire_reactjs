@@ -8,10 +8,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginLeft: '20px',
+    marginLeft: '240px',
     // styles visible on devices with size < sm (mobile device)
     [theme.breakpoints.down('sm')]: {
       display: 'none',
+      marginLeft: '20px',
     },
   },
   menuButton: {
@@ -21,7 +22,23 @@ const useStyles = makeStyles((theme: Theme) => ({
       display: 'none',
     },
   },
-  linkButton: {},
+  linkButton: {
+    '&:hover': {
+      color: 'white !important',
+      textDecoration: 'none',
+    },
+  },
+  drawer: {
+    // styles visible on devices with size > sm (non-mobile device)
+    [theme.breakpoints.up('sm')]: {
+      width: '240px',
+      flexShrink: 0,
+    },
+  },
+  drawerBackground: {
+    width: '200px',
+  },
+  drawerPaper: {},
 }));
 
 export default useStyles;
