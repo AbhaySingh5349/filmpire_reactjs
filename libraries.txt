@@ -1,0 +1,57 @@
+// setup project
+
+npx create-react-app ./ --template typescript
+npm start (to run app)
+
+// eslint setup
+
+npm install -g eslint
+npm install --save-dev @typescript-eslint/parser@^6.0.0 (to resolve conflict between versions of @typescript-eslint/eslint-plugin and @typescript-eslint/parser)
+eslint --init (initialize right eslint config)
+
+// setup github repo
+
+create new repo without README.md
+git init
+git add .
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/AbhaySingh5349/filmpire_reactjs.git
+git push -u origin main
+
+// dependencies
+
+1. ai assistant
+npm i @alan-ai/alan-sdk-web
+
+2. material ui
+npm i @types/material-ui
+npm i @mui/material
+npm i @mui/styles --save --force
+
+3. state management
+npm install @reduxjs/toolkit
+npm install @types/react-redux react-redux @reduxjs/toolkit
+
+4. for api calls
+npm install axios
+
+5. to connect react with redux
+npm install react-redux
+
+6. styling in react
+npm i @emotion/react
+npm i @emotion/styled
+
+7. routing
+npm install react-router-dom
+
+/*
+ "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.6.0",
+    "@typescript-eslint/parser": "^6.6.0",
+    "eslint": "^6.6.0",
+    "eslint-plugin-react": "^7.33.2"
+  }
+
+  */
