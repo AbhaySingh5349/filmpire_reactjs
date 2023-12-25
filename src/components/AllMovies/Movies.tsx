@@ -12,7 +12,7 @@ import { MovieList } from '../index';
 
 const Movies = () => {
   console.log('Movies component');
-  const { data, error, isFetching } = useGetMoviesQuery(2);
+  const { data, isFetching } = useGetMoviesQuery(2);
 
   if (isFetching) {
     return (
@@ -33,8 +33,6 @@ const Movies = () => {
       </Box>
     );
   }
-
-  // if (error) return 'An error occured while fetching movies';
 
   return (
     <div>

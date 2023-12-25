@@ -10,8 +10,11 @@ export const tmdbApi = createApi({
     getMovies: builder.query({
       query: (page) => `movie/popular?page=${page}&api_key=${tmdbApiKey}`,
     }),
+    getGenres: builder.query({
+      query: () => `genre/movie/list?api_key=${tmdbApiKey}`,
+    }),
   }),
 });
 
 // redux toolkit automatically creates hook for us
-export const { useGetMoviesQuery } = tmdbApi;
+export const { useGetMoviesQuery, useGetGenresQuery } = tmdbApi;
