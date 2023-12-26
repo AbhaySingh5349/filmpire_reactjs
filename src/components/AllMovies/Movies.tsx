@@ -5,14 +5,30 @@ import {
   useMediaQuery,
   Typography,
 } from '@mui/material';
-import { useSelector } from 'react-redux';
 
 import { useGetMoviesQuery } from '../../services/TMDB';
 import { MovieList } from '../index';
 
+import { useSelector } from 'react-redux';
+import { selectGenreOrCategory } from '../../features/currentGenreOrCategory';
+
 const Movies = () => {
   console.log('Movies component');
-  const { data, isFetching } = useGetMoviesQuery(2);
+
+  const [page, setPage] = useState(1);
+
+  // when we created slices, we dont have API calls from Redux-Toolkit-Query
+  // now we need to use Selector to get data out of it
+  const { genreIdOrCategoryName } = useSelector(
+    (state: any) => state.currentGenreOrCategory
+  );
+
+  // console.log('genreIdOrCategoryName: ', genreIdOrCategoryName);
+
+  const { data, isFetching } = useGetMoviesQuery({
+    genreIdOrCategoryName,
+    page,
+  });
 
   if (isFetching) {
     return (

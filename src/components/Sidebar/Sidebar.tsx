@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   Divider,
   List,
@@ -15,6 +15,9 @@ import { useTheme } from '@mui/material/styles'; // to know current theme is lig
 import useStyles from './styles';
 import { useGetGenresQuery } from '../../services/TMDB';
 import genreIcons from '../../assets/genres/index';
+
+import { useDispatch, useSelector } from 'react-redux';
+import { selectGenreOrCategory } from '../../features/currentGenreOrCategory';
 
 const redLogo =
   'https://fontmeme.com/permalink/210930/8531c658a743debe1e1aa1a2fc82006e.png';
@@ -67,8 +70,20 @@ interface Props {
 const Sidebar = ({ drawerState }: Props) => {
   const classes = useStyles();
   const theme = useTheme();
-
   const { data, isFetching } = useGetGenresQuery('');
+  const dispatch = useDispatch(); // allows us to dispatch actions (transfering data from component to redux)
+
+  const handleGenreSelection = (selectedGenre: string) => {
+    dispatch(selectGenreOrCategory(selectedGenre));
+  };
+
+  // when we created slices, we dont have API calls from Redux-Toolkit-Query
+  // now we need to use Selector to get data out of it
+  // const { genreIdOrCategoryName } = useSelector(
+  //   (state: any) => state.currentGenreOrCategory
+  // );
+
+  // console.log('genreIdOrCategoryName: ', genreIdOrCategoryName);
 
   if (isFetching) {
     return (
@@ -100,7 +115,7 @@ const Sidebar = ({ drawerState }: Props) => {
         ) : (
           data?.genres.map(({ id, name }: GenreProps) => (
             <Link key={id} className={classes.links} to="/">
-              <ListItem onClick={() => {}} button>
+              <ListItem onClick={() => handleGenreSelection(`${id}`)} button>
                 <ListItemIcon>
                   <img
                     src={name ? genreIcons[name.toLowerCase()] : redLogo}
@@ -121,7 +136,7 @@ const Sidebar = ({ drawerState }: Props) => {
         <ListSubheader>Categories</ListSubheader>
         {categories.map(({ label, value }) => (
           <Link key={value} className={classes.links} to="/">
-            <ListItem onClick={() => {}} button>
+            <ListItem onClick={() => handleGenreSelection(value)} button>
               <ListItemIcon>
                 <img
                   src={redLogo}
