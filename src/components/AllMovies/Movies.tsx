@@ -19,7 +19,7 @@ const Movies = () => {
 
   // when we created slices, we dont have API calls from Redux-Toolkit-Query
   // now we need to use Selector to get data out of it
-  const { genreIdOrCategoryName } = useSelector(
+  const { genreIdOrCategoryName, searchQuery } = useSelector(
     (state: any) => state.currentGenreOrCategory
   );
 
@@ -28,6 +28,7 @@ const Movies = () => {
   const { data, isFetching } = useGetMoviesQuery({
     genreIdOrCategoryName,
     page,
+    searchQuery,
   });
 
   if (isFetching) {

@@ -5,6 +5,7 @@ const tmdbApiKey = process.env.REACT_APP_TMDB_KEY;
 interface GetMoviesProps {
   genreIdOrCategoryName: string;
   page: number;
+  searchQuery: string;
 }
 
 function isNumber(str: string) {
@@ -17,15 +18,23 @@ export const tmdbApi = createApi({
   // (Immediately Invoked Function Expression)
   endpoints: (builder) => ({
     getMovies: builder.query({
-      query: ({ genreIdOrCategoryName, page }: GetMoviesProps) => {
+      query: ({ genreIdOrCategoryName, page, searchQuery }: GetMoviesProps) => {
+        // get  movies by search
+        if (searchQuery) {
+          return `search/movie?query=${searchQuery}&page=${page}&api_key=${tmdbApiKey}`;
+        }
+
+        // get movies by category
         if (genreIdOrCategoryName && !isNumber(genreIdOrCategoryName)) {
           return `movie/${genreIdOrCategoryName}?page=${page}&api_key=${tmdbApiKey}`;
         }
 
+        // get movies by genre
         if (genreIdOrCategoryName && isNumber(genreIdOrCategoryName)) {
           return `discover/movie?with_genres=${genreIdOrCategoryName}&page=${page}&api_key=${tmdbApiKey}`;
         }
 
+        // get popular movies
         return `movie/popular?page=${page}&api_key=${tmdbApiKey}`;
       },
     }),

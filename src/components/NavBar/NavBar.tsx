@@ -19,7 +19,7 @@ import { Link } from 'react-router-dom'; // to switch between different pages
 import useStyles from './styles';
 import { useTheme } from '@mui/material/styles'; // to know current theme is light or dark
 // import Sidebar from '../Sidebar/Sidebar';
-import { Sidebar } from '../index';
+import { Sidebar, Search } from '../index';
 
 const NavBar = () => {
   console.log('NavBar component');
@@ -49,7 +49,7 @@ const NavBar = () => {
           <IconButton color="inherit" sx={{ ml: 1 }} onClick={() => {}}>
             {theme.palette.mode === 'dark' ? <Brightness7 /> : <Brightness4 />}
           </IconButton>
-          {!isMobile && 'Search...'}
+          {!isMobile && <Search />}
           <div>
             {!isAuthenticated ? (
               <Button color="inherit" onClick={() => {}}>
@@ -72,7 +72,7 @@ const NavBar = () => {
               </Button>
             )}
           </div>
-          {isMobile && 'Search...'}
+          {isMobile && <Search />}
         </Toolbar>
       </AppBar>
       <div>
