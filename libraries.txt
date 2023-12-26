@@ -34,7 +34,7 @@ npm install @reduxjs/toolkit
 npm install @types/react-redux react-redux @reduxjs/toolkit
 
 4. for api calls
-npm install axios
+npm install axios --save --force
 
 5. to connect react with redux
 npm install react-redux

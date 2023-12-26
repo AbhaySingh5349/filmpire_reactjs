@@ -41,15 +41,21 @@ export const tmdbApi = createApi({
     getGenres: builder.query({
       query: () => `genre/movie/list?api_key=${tmdbApiKey}`,
     }),
+    getMovieById: builder.query({
+      query: (movieId) =>
+        `/movie/${movieId}?append_to_response=videos,credits&api_key=${tmdbApiKey}`,
+    }),
+    getRecommendations: builder.query({
+      query: ({ movieId, list }) =>
+        `/movie/${movieId}/${list}?api_key=${tmdbApiKey}`,
+    }),
   }),
 });
 
 // redux toolkit automatically creates hook for us
-export const { useGetMoviesQuery, useGetGenresQuery } = tmdbApi;
-
-/*
- if(genreIdOrCategoryName && typeof genreIdOrCategoryName === 'string'){
-          
-        })
-
-        */
+export const {
+  useGetMoviesQuery,
+  useGetGenresQuery,
+  useGetMovieByIdQuery,
+  useGetRecommendationsQuery,
+} = tmdbApi;

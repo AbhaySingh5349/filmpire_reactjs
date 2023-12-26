@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   AppBar,
   IconButton,
@@ -21,15 +21,65 @@ import { useTheme } from '@mui/material/styles'; // to know current theme is lig
 // import Sidebar from '../Sidebar/Sidebar';
 import { Sidebar, Search } from '../index';
 
+import {
+  moviesApi,
+  fetchAuthenticationToken,
+  createSessionId,
+} from '../../utils';
+
+import { useDispatch, useSelector } from 'react-redux';
+import { setUser, userSelector } from '../../features/auth';
+
 const NavBar = () => {
   console.log('NavBar component');
+
+  const { isAuthenticated, user } = useSelector(userSelector);
+
+  console.log('user nav bar object: ', user);
 
   const classes = useStyles();
   const isMobile = useMediaQuery('(max-width:600px)');
   const theme = useTheme();
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const isAuthenticated = true;
+
+  const dispatch = useDispatch();
+
+  const token = localStorage.getItem('auth_token');
+  const session_id_from_local_storage = localStorage.getItem('session_id');
+  useEffect(() => {
+    const loginUser = async () => {
+      if (token) {
+        if (session_id_from_local_storage) {
+          const { data: userData } = await moviesApi.get(
+            `/account?session_id=${session_id_from_local_storage}`
+          );
+
+          console.log(
+            'session_id_from_local_storage: ',
+            session_id_from_local_storage
+          );
+
+          dispatch(setUser(userData)); // setting user account to redux store
+        } else {
+          const new_session_id = await createSessionId();
+          console.log('new session id: ', new_session_id);
+
+          if (new_session_id) {
+            const { data: userData } = await moviesApi.get(
+              `/account?session_id=${new_session_id}`
+            );
+
+            console.log('userData: ', userData);
+
+            dispatch(setUser(userData)); // setting user account to redux store
+          }
+        }
+      }
+    };
+
+    loginUser();
+  }, [token, dispatch, session_id_from_local_storage]);
 
   return (
     <>
@@ -52,14 +102,14 @@ const NavBar = () => {
           {!isMobile && <Search />}
           <div>
             {!isAuthenticated ? (
-              <Button color="inherit" onClick={() => {}}>
+              <Button color="inherit" onClick={fetchAuthenticationToken}>
                 Login &nbsp; <AccountCircle />
               </Button>
             ) : (
               <Button
                 color="inherit"
                 component={Link}
-                to={`/profile/123`}
+                to={`/profile/${user.id}`}
                 className={classes.linkButton}
                 onClick={() => {}}
               >
