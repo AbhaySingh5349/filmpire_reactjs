@@ -55,13 +55,5 @@ npm install react-router-dom
   href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap"
 />
 
-
-/*
- "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^6.6.0",
-    "@typescript-eslint/parser": "^6.6.0",
-    "eslint": "^6.6.0",
-    "eslint-plugin-react": "^7.33.2"
-  }
-
-  */
+9.Deploy
+npm run build (drag and drop build folder to netlify)
