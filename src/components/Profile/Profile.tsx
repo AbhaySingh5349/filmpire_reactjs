@@ -1,13 +1,40 @@
-import React from 'react';
-
-import { useSelector } from 'react-redux';
-import { userSelector } from '../../features/auth';
+import React, { useEffect } from 'react';
 
 import { Typography, Button, Box } from '@mui/material';
 import { ExitToApp } from '@mui/icons-material';
 
+import { useGetSavedListQuery } from '../../services/TMDB';
+
+import { useSelector } from 'react-redux';
+import { userSelector } from '../../features/auth';
+import { SavedMovies } from '../index';
+
 const Profile = () => {
   console.log('Profile component');
+
+  const { user } = useSelector(userSelector);
+
+  const { data: favoriteData, refetch: refetchFavorites } =
+    useGetSavedListQuery({
+      listName: 'favorite/movies',
+      accountId: user.id,
+      sessionId: localStorage.getItem('session_id'),
+      page: 1,
+    });
+
+  const { data: watchlistData, refetch: refetchWatchlist } =
+    useGetSavedListQuery({
+      listName: 'watchlist/movies',
+      accountId: user.id,
+      sessionId: localStorage.getItem('session_id'),
+      page: 1,
+    });
+
+  // to refresh page automatically
+  useEffect(() => {
+    refetchFavorites();
+    refetchWatchlist();
+  }, [refetchFavorites, refetchWatchlist]);
 
   const logOut = () => {
     localStorage.removeItem('auth_token');
@@ -17,9 +44,6 @@ const Profile = () => {
     window.location.href = '/';
   };
 
-  const favouriteMovies = [];
-
-  const { user } = useSelector(userSelector);
   return (
     <Box>
       <Box display="flex" justifyContent="space-between">
@@ -31,12 +55,21 @@ const Profile = () => {
         </Button>
       </Box>
 
-      {!favouriteMovies.length ? (
+      {!favoriteData?.results?.length ? (
+        <Typography variant="h5">Add Favourite Movies</Typography>
+      ) : (
+        <Box>
+          <SavedMovies title="Favourite Movies" data={favoriteData.results} />
+        </Box>
+      )}
+      {!watchlistData?.results?.length ? (
         <Typography variant="h5">
-          Add Favourite Movies or Watchlist movies to watch them
+          Add Movies to Watchlist to watch them
         </Typography>
       ) : (
-        <Box>Favourite Movies</Box>
+        <Box>
+          <SavedMovies title="Watchlist Movies" data={watchlistData.results} />
+        </Box>
       )}
     </Box>
   );

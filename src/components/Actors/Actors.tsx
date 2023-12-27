@@ -28,8 +28,7 @@ const Actors = () => {
     error,
   } = useGetActorsDetailsQuery(actorId);
 
-  const { data: movieData, isFetching: isFetchingMovieData } =
-    useGetMoviesByActorIdQuery({ actorId, page });
+  const { data: movieData } = useGetMoviesByActorIdQuery({ actorId, page });
 
   if (isFetchingActorData) {
     return (

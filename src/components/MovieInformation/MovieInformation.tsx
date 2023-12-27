@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import {
   Typography,
@@ -22,13 +22,12 @@ import {
 
 import { Link, useParams } from 'react-router-dom';
 
-import { useDispatch, useSelector } from 'react-redux';
-
 import axios from 'axios';
 
 import {
   useGetMovieByIdQuery,
   useGetRecommendationsQuery,
+  useGetSavedListQuery,
 } from '../../services/TMDB';
 
 import useStyles from './styles';
@@ -37,8 +36,14 @@ import genreIcons from '../../assets/genres/index';
 import { selectGenreOrCategory } from '../../features/currentGenreOrCategory';
 import MovieList from '../MovieList/MovieList';
 
+import { useDispatch, useSelector } from 'react-redux';
+import { userSelector } from '../../features/auth';
+
 const MovieInformation = () => {
   console.log('MovieInformation component');
+
+  const tmdbApiKey = process.env.REACT_APP_TMDB_KEY;
+  const { isAuthenticated, user } = useSelector(userSelector);
 
   const classes = useStyles();
   const dispatch = useDispatch(); // allows us to dispatch actions (transfering movieInfoData from component to redux)
@@ -52,6 +57,39 @@ const MovieInformation = () => {
 
   const { data: recomendationData, isFetching: isFetchingRecommendations } =
     useGetRecommendationsQuery({ movieId, list: '/recommendations' });
+
+  const { data: favoriteData } = useGetSavedListQuery({
+    listName: 'favorite/movies',
+    accountId: user.id,
+    sessionId: localStorage.getItem('session_id'),
+    page: 1,
+  });
+
+  const { data: watchlistData } = useGetSavedListQuery({
+    listName: 'watchlist/movies',
+    accountId: user.id,
+    sessionId: localStorage.getItem('session_id'),
+    page: 1,
+  });
+
+  useEffect(() => {
+    setIsMovieFavorited(
+      !!favoriteData?.results?.find(
+        (movie: any) => movie?.id === movieInfoData?.id
+      )
+    );
+  }, [movieInfoData, favoriteData]);
+
+  useEffect(() => {
+    setIsMovieWatchlisted(
+      !!watchlistData?.results?.find(
+        (movie: any) => movie?.id === movieInfoData?.id
+      )
+    );
+  }, [movieInfoData, watchlistData]);
+
+  const [isMovieFavorited, setIsMovieFavorited] = useState(false);
+  const [isMovieWatchlisted, setIsMovieWatchlisted] = useState(false);
 
   console.log('movie info: ', movieInfoData);
   console.log('recomendationData: ', recomendationData);
@@ -84,16 +122,50 @@ const MovieInformation = () => {
     dispatch(selectGenreOrCategory(selectedGenre));
   };
 
-  let isMovieFavorited = true;
-  let isMovieWatchlisted = true;
+  // since Redux-Toolkit-Query allows to fetch certain things as hooks which are applied at component level but not inside a function
+  const addToFavourites = async () => {
+    if (!isAuthenticated) {
+      alert('Login to Add To Favourites!');
+      return;
+    }
+    await axios.post(
+      `https://api.themoviedb.org/3/account/${
+        user.id
+      }/favorite?api_key=${tmdbApiKey}&session_id=${localStorage.getItem(
+        'session_id'
+      )}`,
+      { media_type: 'movie', media_id: movieId, favorite: !isMovieFavorited }
+    );
 
-  const addToFavourites = () => {};
+    setIsMovieFavorited((prevState) => !prevState);
+  };
 
-  const addToWatchlist = () => {};
+  const addToWatchlist = async () => {
+    if (!isAuthenticated) {
+      alert('Login to Add To Watchlist!');
+      return;
+    }
+
+    await axios.post(
+      `https://api.themoviedb.org/3/account/${
+        user.id
+      }/watchlist?api_key=${tmdbApiKey}&session_id=${localStorage.getItem(
+        'session_id'
+      )}`,
+      { media_type: 'movie', media_id: movieId, watchlist: !isMovieWatchlisted }
+    );
+
+    setIsMovieWatchlisted((prevState) => !prevState);
+  };
 
   return (
     <Grid container className={classes.containerSpaceAround}>
-      <Grid item sm={12} lg={4} style={{ marginTop: '0px' }}>
+      <Grid
+        item
+        sm={12}
+        lg={4}
+        style={{ marginTop: '0px', display: 'flex', justifyContent: 'center' }}
+      >
         <img
           className={classes.poster}
           src={`https://image.tmdb.org/t/p/w500/${movieInfoData?.poster_path}`}
@@ -120,10 +192,8 @@ const MovieInformation = () => {
             </Typography>
           </Box>
           <Typography variant="h6" align="center" gutterBottom>
-            {movieInfoData?.runtime} min.{' '}
-            {movieInfoData?.spoken_languages.length > 0
-              ? `/ ${movieInfoData?.spoken_languages[0].name}`
-              : ''}
+            {movieInfoData?.runtime} min. |{' '}
+            {movieInfoData?.spoken_languages[0].name}
           </Typography>
         </Grid>
         <Grid item className={classes.genresContainer}>
@@ -222,7 +292,7 @@ const MovieInformation = () => {
                 {isMovieFavorited ? 'Unfavourite' : 'Favorite'}
               </Button>
               <Button
-                onClick={addToFavourites}
+                onClick={addToWatchlist}
                 endIcon={isMovieWatchlisted ? <Remove /> : <PlusOne />}
               >
                 {/* {isMovieWatchlisted ? 'Remove From Watchlist' : 'Add To Watchlist'} */}

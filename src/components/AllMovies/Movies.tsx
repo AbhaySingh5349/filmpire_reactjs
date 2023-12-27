@@ -1,10 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import {
-  Box,
-  CircularProgress,
-  useMediaQuery,
-  Typography,
-} from '@mui/material';
+import React, { useState } from 'react';
+import { Box, CircularProgress, Typography } from '@mui/material';
 
 import { useGetMoviesQuery } from '../../services/TMDB';
 import { MovieList, Pagination } from '../index';

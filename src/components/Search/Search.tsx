@@ -12,6 +12,8 @@ const Search = () => {
   const classes = useStyles();
   console.log('Search Component');
 
+  const location = useLocation();
+
   const dispatch = useDispatch();
 
   const [query, setQuery] = useState('');
@@ -20,6 +22,8 @@ const Search = () => {
       dispatch(searchMovie(query));
     }
   };
+
+  if (location.pathname !== '/') return null;
 
   return (
     <div className={classes.searchContainer}>

@@ -22,7 +22,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     [theme.breakpoints.down('md')]: {
       margin: '0 auto',
       width: '50%',
-      height: '350px',
     },
     // styles visible on devices with size < sm (mobile device)
     [theme.breakpoints.down('sm')]: {
