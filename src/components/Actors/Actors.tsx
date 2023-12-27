@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { Typography, Button, Grid, Box, CircularProgress } from '@mui/material';
 
-import { useNavigate, Link, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import {
   useGetActorsDetailsQuery,
@@ -10,7 +10,7 @@ import {
 } from '../../services/TMDB';
 import { ArrowBack } from '@mui/icons-material';
 
-import { MovieList } from '../index';
+import { MovieList, Pagination } from '../index';
 
 import useStyles from './styles';
 
@@ -20,7 +20,7 @@ const Actors = () => {
   const classes = useStyles();
   const { id: actorId } = useParams();
   const navigate = useNavigate();
-  const page = 1;
+  const [page, setPage] = useState(1);
 
   const {
     data: actorData,
@@ -104,6 +104,11 @@ const Actors = () => {
         {movieData?.results.length > 0 && (
           <MovieList movies={movieData?.results} />
         )}
+        <Pagination
+          currentPage={page}
+          setCurrentPage={setPage}
+          totalPages={movieData?.results?.length}
+        />
       </Box>
     </>
   );
