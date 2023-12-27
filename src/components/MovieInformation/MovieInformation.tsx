@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 
 import {
-  Modal,
   Typography,
   Button,
   ButtonGroup,
   Grid,
   Box,
   CircularProgress,
-  useMediaQuery,
   Rating,
 } from '@mui/material';
 import {
@@ -45,8 +43,6 @@ const MovieInformation = () => {
   const classes = useStyles();
   const dispatch = useDispatch(); // allows us to dispatch actions (transfering movieInfoData from component to redux)
 
-  const [modalOpen, setModalOpen] = useState(false);
-
   const { id: movieId } = useParams();
   const {
     data: movieInfoData,
@@ -72,6 +68,14 @@ const MovieInformation = () => {
     return (
       <Box display="flex" justifyContent="center" alignItems="center">
         <Link to="/">Something went wrong, try again !</Link>
+      </Box>
+    );
+  }
+
+  if (isFetchingRecommendations) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center">
+        <CircularProgress size="4rem" />
       </Box>
     );
   }
