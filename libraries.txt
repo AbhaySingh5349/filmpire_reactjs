@@ -1,6 +1,7 @@
 // setup project
 
 npx create-react-app ./ --template typescript
+delete App.css and move App.test.tsx & App.tsx in src/components
 npm start (to run app)
 
 // eslint setup
